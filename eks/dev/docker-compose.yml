@@ -1,0 +1,26 @@
+services:
+  backend:
+    platform: linux/amd64
+    build:
+      context: ../johnny-johnny-backend/chat-api
+    image: johnny-chat-api:test
+    container_name: johnny-chat-api
+    ports:
+      - "8080:8080"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+
+  frontend:
+    platform: linux/amd64
+    build:
+      context: ../johnny-johnny-ui
+      args:
+        NEXT_PUBLIC_API_URL: http://api.johnny-johnny.mycroftai.org
+    image: johnny-chat-ui:test
+    container_name: johnny-chat-ui
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8080
+    depends_on:
+      - backend

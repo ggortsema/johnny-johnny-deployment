@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: johnny-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: johnny-backend
+  template:
+    metadata:
+      labels:
+        app: johnny-backend
+    spec:
+      containers:
+        - name: johnny-backend
+          image: 359546647832.dkr.ecr.us-east-1.amazonaws.com/johnny-johnny/johnny-johnny-backend:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: openai-secret
+                  key: OPENAI_API_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: johnny-backend
+spec:
+  selector:
+    app: johnny-backend
+  ports:
+    - port: 8080
+      targetPort: 8080
